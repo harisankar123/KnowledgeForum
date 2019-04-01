@@ -10,10 +10,10 @@ import com.knowledge.dto.SearchResult;
 
 @Service
 public class SearchResultService {
-private static final String LOCAL_DNS = "192.168.0.1";
-private static final String GOOGLE_DNS = "8.8.8.8";
+private static final String LOCAL_DNS = "192.168.1.106";
+private static final String GOOGLE_DNS = "113.193.8.18";
 private static final String RURAL = "rural";
-private static final String MEASURE = "MEASURE";
+private static final String MEASURE = "measure";
 private static final String COMMAND = "cmd";
 private static final String SEPARATOR = " ";
 private static final String MEASURE_COMMAND = "(Measure-Command {Resolve-DnsName -server %s %s}).totalseconds";
@@ -21,8 +21,12 @@ private static final String MEASURE_COMMAND = "(Measure-Command {Resolve-DnsName
 		Process p;
 		try {
 			p = Runtime.getRuntime().exec(COMMAND);
+			
 			PrintWriter stdin = new PrintWriter(p.getOutputStream());
-			stdin.println(getCommandToExecute(criteria));
+			stdin.println("powershell");
+			String cmdToExecute = getCommandToExecute(criteria);
+			System.out.println(cmdToExecute);
+			stdin.println(cmdToExecute);
 			stdin.close();
 			p.waitFor();
 			return getSearchResult(readProcessResult(p), criteria);
