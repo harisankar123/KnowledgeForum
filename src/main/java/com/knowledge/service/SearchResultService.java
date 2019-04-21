@@ -1,7 +1,5 @@
 package com.knowledge.service;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -14,12 +12,13 @@ import com.knowledge.dto.SearchResult;
 
 @Service
 public class SearchResultService {
+	private static final String IPCONFIG = "ipconfig";
 	private static final String LOCAL_DNS = "192.168.1.106";
 	private static final String GOOGLE_DNS = "113.193.8.18";
 	private static final String RURAL = "rural";
 	private static final String MEASURE = "measure";
-	private static final String DISPLAY_DNS = "ipconfig /displaydns";
-	private static final String FLUSH_DNS = "ipconfig /flushdns";
+	private static final String DISPLAY_DNS = "displaydns";
+	private static final String FLUSH_DNS = "flushdns";
 	private static final String COMMAND = "cmd";
 	private static final String SEPARATOR = " ";
 	private static final String MEASURE_COMMAND = "(Measure-Command {Resolve-DnsName -server %s %s}).totalseconds";
@@ -27,22 +26,29 @@ public class SearchResultService {
 		Process p;
 		try {
 			p = Runtime.getRuntime().exec(COMMAND);
-
 			PrintWriter stdin = new PrintWriter(p.getOutputStream());
+			String outFileName = "temp.txt";
+			if(criteria.getLocationCategory().equalsIgnoreCase("rural")) {
+				outFileName ="temp1.txt";
+				stdin.println("F:/software/clumsy/clumsy.exe --filter outbound --lag on --lag-time 200");
+			}
 			String cmdToExecute = getCommandToExecute(criteria);
+			System.out.println(cmdToExecute);
 			if(criteria.getSearchCategory().equals(MEASURE)){
 				stdin.println("powershell");
 				stdin.println(cmdToExecute);
+				cleanup(stdin);
 				stdin.close();
 				p.waitFor();
 				return getSearchResult(readProcessResult(p), criteria);
 			}
 			else{
-				stdin.println(cmdToExecute +" >temp.txt");
+				stdin.println(cmdToExecute +" >"+outFileName);
+				cleanup(stdin);
 				stdin.close();
 				p.waitFor();
 				return getSearchResult(new String(Files.
-						readAllBytes(Paths.get("temp.txt"))), criteria);
+						readAllBytes(Paths.get(outFileName))), criteria);
 			}
 
 		} catch (Exception e) {
@@ -65,7 +71,7 @@ public class SearchResultService {
 		}
 		else if (criteria.getSearchCategory().equals(FLUSH_DNS) ||
 				criteria.getSearchCategory().equals(DISPLAY_DNS)) {
-			return criteria.getSearchCategory();
+			return IPCONFIG + SEPARATOR + criteria.getSearchCategory();
 		}
 		return builder.append(criteria.getSearchCategory()).append(SEPARATOR).append(criteria.getUrl()).toString();
 	}
@@ -79,13 +85,22 @@ public class SearchResultService {
 		}
 		return builder.toString();
 	}
+	
+	private void cleanup(PrintWriter stdin) {
+		stdin.println("TASKKILL /IM clumsy.exe");
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void main(String[] args) {
 		SearchResultService calc = new SearchResultService();
 		SearchCritera criteria = new SearchCritera();
 		criteria.setLocationCategory("urban");
-		criteria.setSearchCategory(DISPLAY_DNS);
-		criteria.setUrl("iter.ac.in");
+		criteria.setSearchCategory("dig");
+		criteria.setUrl("google.co.in");
 		System.out.println(new String(calc.getSearchResult(criteria).getSearchResult()));
 	}
 

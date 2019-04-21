@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.knowledge.dao.SearchResultRepository;
 import com.knowledge.dto.SearchCritera;
 import com.knowledge.dto.SearchResult;
 import com.knowledge.dto.SearchResultUI;
-import com.knowledge.dto.TileSettings;
 import com.knowledge.service.SearchResultService;
-import com.knowledge.web.View;
 
 @RestController
 @EnableAutoConfiguration
