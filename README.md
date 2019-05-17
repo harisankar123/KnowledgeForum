@@ -1,10 +1,10 @@
 # KnowledgeForum
 This is backend part of the application. User should have spring extension added , If they have eclipse IDE in their system. Otherwise they can run this application in Spring tool Suite. 
+
 Requirements
 For building and running the application you need:
 JDK 1.8
 Maven 3
-
 
 Changes to be done as part of running the application:
 Go to application properties file and update the required sql related configurations like path,username and password.Kindly find the below lines to be changed.
