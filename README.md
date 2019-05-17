@@ -1,5 +1,7 @@
 # KnowledgeForum
 This is backend part of the application. User should have spring extension added , If they have eclipse IDE in their system. Otherwise they can run this application in Spring tool Suite. 
+Alternatively you can use the Spring Boot Maven plugin like so:
+mvn spring-boot:run
 
 Requirements
 For building and running the application you need:
