@@ -8,9 +8,9 @@ Maven 3
 
 Changes to be done as part of running the application:
 Go to application properties file and update the required sql related configurations like path,username and password.Kindly find the below lines to be changed.
-spring.datasource.url="SQL path"
-spring.datasource.username=username
-spring.datasource.password=password
+spring.datasource.url="SQL path";
+spring.datasource.username=username;
+spring.datasource.password=password;
 
 Build the Project:
 Right Click on the project, and run as maven build .
